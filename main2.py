@@ -44,10 +44,11 @@ def main():
                                               'url': sizes['url'],
                                               'date': photo['date']
                                               }
-                return max_photo
-
+        return max_photo
+        
+    vk = VK(ваш токен вк, ваш id, id странички с которой нужны фотки)
     images_url = max_photos(vk.photos_get())
-    filename = images_url.get(f'{['user_likes']}_{['date']}')
+    filename = images_url.get(['user_likes']+['date'])
 
     res = requests.get(images_url)
     with open(f'image/{filename}', 'wb') as f:
@@ -56,7 +57,7 @@ def main():
     class YandexDisk:
         def __init__(self, token):
             self.headers = {
-                'Autorizathion': f'OAuth {token}'
+                'Authorization': f'OAuth {token}'
             }
 
             response = requests.put(url='https://cloud-api.yandex.net/v1/disk/resources',
@@ -71,7 +72,7 @@ def main():
             response = requests.get(upload_url,
                                     params=params,
                                     headers=self.headers)
-            upload_link = res.json()['href']
+            upload_link = response.json()['href']
 
             with open(f'image/{filename}', 'rb') as file:
                 response = requests.put(upload_link, files={'file': file})
@@ -79,8 +80,8 @@ def main():
             for i in tqdm(range(100)):
                 pass
 
-    vk = VK(000000, 333333333, 85858585)
-    yandex = YandexDisk(0000000)
+    
+    yandex = YandexDisk(ваш токен яндекс)
     yandex.upload_folder()
 
 if __name__ == '__main__':
