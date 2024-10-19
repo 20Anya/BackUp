@@ -30,16 +30,16 @@ def main():
 
     def max_photos(photos):
         max_photo = {}
-        for photo in photos['items']:
+        for photo in photos['response']['items']:
             for sizes in photo['sizes']:
                 if sizes['type'] == 'z':
-                    max_photo[photo['id']] = {'user_likes': photo['user_likes'],
+                    max_photo[photo['id']] = {'user_likes': photo['likes']['user_likes'],
                                               'type': sizes['type'],
                                               'url': sizes['url'],
                                               'date': photo['date']
                                               }
                 elif sizes['type'] == 'y':
-                    max_photo[photo['id']] = {'user_likes': photo['user_likes'],
+                    max_photo[photo['id']] = {'user_likes': photo['likes']['user_likes'],
                                               'type': sizes['type'],
                                               'url': sizes['url'],
                                               'date': photo['date']
@@ -48,7 +48,10 @@ def main():
         
     vk = VK(ваш токен вк, ваш id, id странички с которой нужны фотки)
     images_url = max_photos(vk.photos_get())
-    filename = images_url.get(['user_likes']+['date'])
+    for a, b in images_url.items():
+        likes = b['user_likes']
+        date = b['date']
+        filename = f'{likes}_{date}'
 
     res = requests.get(images_url)
     with open(f'image/{filename}', 'wb') as f:
