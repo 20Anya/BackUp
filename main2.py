@@ -47,11 +47,14 @@ def main():
         return max_photo
         
     vk = VK(ваш токен вк, ваш id, id странички с которой нужны фотки)
-    images_url = max_photos(vk.photos_get())
-    for a, b in images_url.items():
+    images_inf = max_photos(vk.photos_get())  #  изменила url на inf
+    for a, b in images_inf.items():
         likes = b['user_likes']
         date = b['date']
         filename = f'{likes}_{date}'
+
+    for i, y in images_inf.items():
+        images_url = y['url']
 
     res = requests.get(images_url)
     with open(f'image/{filename}', 'wb') as f:
