@@ -1,5 +1,6 @@
 import requests
 from tqdm import tqdm
+import os
 
 def main():
     class VK:
@@ -30,35 +31,41 @@ def main():
 
     def max_photos(photos):
         max_photo = {}
-        for photo in photos['response']['items']:
+        for i, photo in enumerate(photos['response']['items']):
             for sizes in photo['sizes']:
                 if sizes['type'] == 'z':
-                    max_photo[photo['id']] = {'user_likes': photo['likes']['user_likes'],
-                                              'type': sizes['type'],
-                                              'url': sizes['url'],
-                                              'date': photo['date']
-                                              }
+                    max_photo[i+1] = {photo['id']: {'user_likes': photo['likes']['user_likes'],
+                                          'type': sizes['type'],
+                                          'url': sizes['url'],
+                                          'date': photo['date']
+                                          }}
                 elif sizes['type'] == 'y':
-                    max_photo[photo['id']] = {'user_likes': photo['likes']['user_likes'],
-                                              'type': sizes['type'],
-                                              'url': sizes['url'],
-                                              'date': photo['date']
-                                              }
+                    max_photo[i+1] = {photo['id']: {'user_likes': photo['likes']['user_likes'],
+                                      'type': sizes['type'],
+                                      'url': sizes['url'],
+                                      'date': photo['date']
+                                      }}
         return max_photo
         
     vk = VK(ваш токен вк, ваш id, id странички с которой нужны фотки)
+    
     images_inf = max_photos(vk.photos_get())  #  изменила url на inf
+    photo_inf = {}
     for a, b in images_inf.items():
-        likes = b['user_likes']
-        date = b['date']
-        filename = f'{likes}_{date}'
-
-    for i, y in images_inf.items():
-        images_url = y['url']
-
-    res = requests.get(images_url)
-    with open(f'image/{filename}', 'wb') as f:
-        f.write(res.content)
+        for id_, inf in b.items():
+            likes = inf['user_likes']
+            date = inf['date']
+            url = inf['url']
+            filename = f'{likes}_{date}.jpg'
+            photo_inf[filename] = url
+    
+    if not os.path.exists("image"):
+        os.mkdir("image")
+        
+    for photo_name, photo_url in photo_inf.items():
+        with open(f'image/{photo_name}', 'wb') as file:
+            res = requests.get(photo_url)
+            file.write(res.content)
 
     class YandexDisk:
         def __init__(self, token):
