@@ -1,6 +1,11 @@
 import requests
 from tqdm import tqdm
 import os
+vk_token = ''       #  ваш вк-токен 
+user_id = ''        #  ваш вк-id
+owner_id = ''       #  id странички, с которой будут загружаться фотографии
+yandex_token = ''   #  ваш яндекс-токен
+
 
 def main():
     class VK:
@@ -47,9 +52,9 @@ def main():
                                       }}
         return max_photo
         
-    vk = VK(ваш токен вк, ваш id, id странички с которой нужны фотки)
+    vk = VK(vk_token, user_id, owner_id)
     
-    images_inf = max_photos(vk.photos_get())  #  изменила url на inf
+    images_inf = max_photos(vk.photos_get())  
     photo_inf = {}
     for a, b in images_inf.items():
         for id_, inf in b.items():
@@ -94,8 +99,9 @@ def main():
                 pass
 
     
-    yandex = YandexDisk(ваш токен яндекс)
-    yandex.upload_folder()
+    yandex = YandexDisk(yandex_token)
+    for i in photo_inf:
+        yandex.upload_folder()
 
 if __name__ == '__main__':
     main()
